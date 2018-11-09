@@ -1,5 +1,5 @@
 {
-  "name": "generator-ts-npm-module",
+  "name": "generator-ts-node-module",
   "version": "0.0.0",
   "description": "A Generator for NPM-Modules Written in TypeScript.",
   "scripts": {

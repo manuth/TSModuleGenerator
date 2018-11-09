@@ -7,14 +7,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Yeoman ts-node-module",
-            "program": "${workspaceFolder}/node_modules/yo/lib/cli.js",
-            "args": [
-                "ts-node-module"
-            ],
-            "preLaunchTask": "Compile",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/lib/index.js",
+            "preLaunchTask": "Compile"
         },
         {
             "type": "node",
