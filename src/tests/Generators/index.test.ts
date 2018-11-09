@@ -2,5 +2,5 @@ suite(
     "Generators",
     () =>
     {
-        require("./generator-ts-npm-module.test");
+        require("./generator-ts-node-module.test");
     });
