@@ -17,4 +17,7 @@ yo ts-npm-module
 ```
 
 ## Generator Output
-Use this section for documenting what your generator actually will generate.
+  - An environment for writing a Node-Module in TypeScript
+  - Mocha test-environment
+  - VSCode workspace configuration (optional)
+  - TSLint-ruleset (optional)
