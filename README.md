@@ -1,19 +1,19 @@
 # TSModuleGenerator
-A Generator for NPM-Modules Written in TypeScript.
+A Generator for Node-Modules Written in TypeScript.
 
 ## Usage
 ### Installing `TSModuleGenerator`
 You can install `TSModuleGenerator` using following command:
 
 ```bash
-npm install -g yo generator-ts-npm-module
+npm install -g yo generator-ts-node-module
 ```
 
 ### Using the Generator
 You can run the generator by invoking this command on a command prompt:
 
 ```bash
-yo ts-npm-module
+yo ts-node-module
 ```
 
 ## Generator Output
