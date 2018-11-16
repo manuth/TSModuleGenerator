@@ -1,5 +1,9 @@
 # Source-files
 [Ss]rc/
 
-# Visual Studio Code Environment
+# Unit-Tests
+test/
+[Ll]ib/tests
+
+# Visual Studio Code-Environment
 .vscode/
