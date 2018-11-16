@@ -143,23 +143,6 @@ class ModuleGenerator extends Generator<IModuleSettings>
     {
         let sourceDir = "src";
         this.destinationRoot(this.Settings[ModuleSetting.Destination]);
-        let packageJSON = require(this.modulePath("package.json"));
-        let devPackages = [
-            "@types/mocha",
-            "@types/node",
-            "mocha",
-            "tslint",
-            "typescript"
-        ];
-        let devDependencies: { [key: string]: string } = {};
-        for (let dependency in packageJSON.devDependencies)
-        {
-            if (devPackages.includes(dependency))
-            {
-                devDependencies[dependency] = packageJSON.devDependencies[dependency];
-            }
-        }
-
         this.fs.copy(this.templatePath("index.ts.ejs"), this.destinationPath(sourceDir, "index.ts"));
         this.fs.copyTpl(
             this.templatePath("main.test.ts.ejs"),
@@ -170,21 +153,7 @@ class ModuleGenerator extends Generator<IModuleSettings>
         this.fs.copy(this.modulePath("test", "mocha.opts"), this.destinationPath("test", "mocha.opts"));
         this.fs.copy(this.modulePath(".gitignore"), this.destinationPath(".gitignore"));
         this.fs.copy(this.modulePath(".npmignore"), this.destinationPath(".npmignore"));
-        this.fs.writeJSON(
-            this.destinationPath("package.json"),
-            {
-                name: this.Settings[ModuleSetting.Name],
-                version: "0.0.0",
-                description: this.Settings[ModuleSetting.Description],
-                scripts: packageJSON.scripts,
-                author: {
-                    name: this.user.git.name(),
-                    email: this.user.git.email()
-                },
-                main: "lib/index.js",
-                types: "lib/index.d.ts",
-                devDependencies
-            });
+        this.fs.writeJSON(this.destinationPath("package.json"), this.GetPackageJSON());
         this.fs.copy(this.modulePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
         this.fs.copyTpl(
             this.templatePath("README.md.ejs"),
@@ -212,6 +181,72 @@ class ModuleGenerator extends Generator<IModuleSettings>
             Open it up using this command:
 
             code "${this.Settings[ModuleSetting.Destination]}"`));
+    }
+
+    /**
+     * Gets the package-manifest for the generator to generate.
+     */
+    protected GetPackageJSON = (): {} =>
+    {
+        let scripts = [
+            "watch",
+            "compile",
+            "lint",
+            "test",
+            "prepare"
+        ];
+        let dependencies: string[] = [];
+        let devDependencies = [
+            "@types/mocha",
+            "@types/node",
+            "mocha",
+            "tslint",
+            "typescript"
+        ];
+
+        let result = {
+            name: this.Settings[ModuleSetting.Name],
+            version: "0.0.0",
+            description: this.Settings[ModuleSetting.Description],
+            scripts: {} as { [key: string]: string },
+            author: {
+                name: this.user.git.name(),
+                email: this.user.git.email()
+            },
+            main: "lib/index.js",
+            types: "lib/index.d.ts",
+            keywords: [] as string[],
+            devDependencies: {} as { [key: string]: string },
+            dependencies: {} as { [key: string]: string }
+        };
+
+        let packageJSON: typeof result = require(this.modulePath("package.json"));
+
+        for (let script of scripts)
+        {
+            if (script in packageJSON.scripts)
+            {
+                result.scripts[script] = packageJSON.scripts[script];
+            }
+        }
+
+        for (let devDependency of devDependencies)
+        {
+            if (devDependency in packageJSON.devDependencies)
+            {
+                result.devDependencies[devDependency] = packageJSON.devDependencies[devDependency];
+            }
+        }
+
+        for (let dependency of dependencies)
+        {
+            if (dependency in packageJSON.dependencies)
+            {
+                result.dependencies[dependency] = packageJSON.dependencies[dependency];
+            }
+        }
+
+        return result;
     }
 }
 
