@@ -43,12 +43,7 @@ class ModuleGenerator extends Generator<IModuleSettings>
                 name: ModuleSetting.Destination,
                 message: "Where do you want to save your project to?",
                 default: "./",
-                filter: async input =>
-                {
-                    let destination = Path.isAbsolute(input) ? input : Path.resolve(process.cwd(), input);
-                    this.destinationRoot(destination);
-                    return destination;
-                }
+                filter: async input => Path.isAbsolute(input) ? input : Path.resolve(process.cwd(), input)
             },
             {
                 type: "input",
@@ -147,6 +142,7 @@ class ModuleGenerator extends Generator<IModuleSettings>
     public async writing()
     {
         let sourceDir = "src";
+        this.destinationRoot(this.Settings[ModuleSetting.Destination]);
         let packageJSON = require(this.modulePath("package.json"));
         let devPackages = [
             "@types/mocha",
