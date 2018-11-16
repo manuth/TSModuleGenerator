@@ -2,6 +2,21 @@
   "name": "generator-ts-node-module",
   "version": "1.0.1",
   "description": "A Generator for Node-Modules Written in TypeScript.",
+  "author": "Manuel Thalmann <m@nuth.ch>",
+  "license": "MIT",
+  "keywords": [
+    "yeoman-generator",
+    "node",
+    "module"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manuth/TSModuleGenerator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/manuth/TSModuleGenerator/issues"
+  },
+  "homepage": "https://github.com/manuth/TSModuleGenerator#readme",
   "scripts": {
     "watch": "tsc -p . --watch",
     "compile": "tsc -p .",
@@ -9,21 +24,13 @@
     "test": "mocha",
     "prepare": "npm run compile"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/manuth/TSModuleGenerator.git"
+  "dependencies": {
+    "dedent": "^0.7.0",
+    "inquirer": "^6.2.0",
+    "lodash.kebabcase": "^4.1.1",
+    "yeoman-generator": "^3.1.1",
+    "yosay": "^2.0.2"
   },
-  "keywords": [
-    "yeoman-generator",
-    "node",
-    "module"
-  ],
-  "author": "Manuel Thalmann <m@nuth.ch>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/manuth/TSModuleGenerator/issues"
-  },
-  "homepage": "https://github.com/manuth/TSModuleGenerator#readme",
   "devDependencies": {
     "@types/dedent": "^0.7.0",
     "@types/inquirer": "0.0.43",
@@ -37,12 +44,5 @@
     "typescript": "^3.1.5",
     "typescript-tslint-plugin": "0.0.5",
     "yo": "^2.0.5"
-  },
-  "dependencies": {
-    "dedent": "^0.7.0",
-    "inquirer": "^6.2.0",
-    "lodash.kebabcase": "^4.1.1",
-    "yeoman-generator": "^3.1.1",
-    "yosay": "^2.0.2"
   }
 }

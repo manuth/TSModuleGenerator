@@ -208,16 +208,16 @@ class ModuleGenerator extends Generator<IModuleSettings>
             name: this.Settings[ModuleSetting.Name],
             version: "0.0.0",
             description: this.Settings[ModuleSetting.Description],
-            scripts: {} as { [key: string]: string },
             author: {
                 name: this.user.git.name(),
                 email: this.user.git.email()
             },
+            keywords: [] as string[],
             main: "lib/index.js",
             types: "lib/index.d.ts",
-            keywords: [] as string[],
-            devDependencies: {} as { [key: string]: string },
-            dependencies: {} as { [key: string]: string }
+            scripts: {} as { [key: string]: string },
+            dependencies: {} as { [key: string]: string },
+            devDependencies: {} as { [key: string]: string }
         };
 
         let packageJSON: typeof result = require(this.modulePath("package.json"));
