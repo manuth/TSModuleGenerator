@@ -64,7 +64,6 @@ typings/
 [Ss]rc/
 
 # Unit-Tests
-test/
 [Ll]ib/tests
 
 # Visual Studio Code-Environment
