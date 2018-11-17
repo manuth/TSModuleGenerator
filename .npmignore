@@ -65,6 +65,3 @@ typings/
 
 # Unit-Tests
 [Ll]ib/tests
-
-# Visual Studio Code-Environment
-.vscode/
