@@ -189,8 +189,8 @@ class ModuleGenerator extends Generator<IModuleSettings>
     protected GetPackageJSON = (): {} =>
     {
         let scripts = [
-            "watch",
             "compile",
+            "watch",
             "lint",
             "test",
             "prepare"
@@ -201,7 +201,8 @@ class ModuleGenerator extends Generator<IModuleSettings>
             "@types/node",
             "mocha",
             "tslint",
-            "typescript"
+            "typescript",
+            "typescript-tslint-plugin"
         ];
 
         let result = {

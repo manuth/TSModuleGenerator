@@ -1,6 +1,6 @@
 {
   "name": "generator-ts-node-module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Generator for Node-Modules Written in TypeScript.",
   "author": "Manuel Thalmann <m@nuth.ch>",
   "license": "MIT",
@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/manuth/TSModuleGenerator#readme",
   "scripts": {
-    "watch": "tsc -p . --watch",
     "compile": "tsc -p .",
+    "watch": "tsc -p . --watch",
     "lint": "tslint -p ./ -t verbose",
     "test": "mocha",
     "prepare": "npm run compile"
@@ -43,7 +43,7 @@
     "mocha": "^5.2.0",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6",
-    "typescript-tslint-plugin": "0.1.0",
+    "typescript-tslint-plugin": "^0.1.0",
     "yeoman-test": "^1.9.1",
     "yo": "^2.0.5"
   }
