@@ -189,8 +189,8 @@ class ModuleGenerator extends Generator<IModuleSettings>
     protected GetPackageJSON = (): {} =>
     {
         let scripts = [
-            "watch",
             "compile",
+            "watch",
             "lint",
             "test",
             "prepare"

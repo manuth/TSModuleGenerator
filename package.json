@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/manuth/TSModuleGenerator#readme",
   "scripts": {
-    "watch": "tsc -p . --watch",
     "compile": "tsc -p .",
+    "watch": "tsc -p . --watch",
     "lint": "tslint -p ./ -t verbose",
     "test": "mocha",
     "prepare": "npm run compile"
