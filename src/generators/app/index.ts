@@ -201,7 +201,8 @@ class ModuleGenerator extends Generator<IModuleSettings>
             "@types/node",
             "mocha",
             "tslint",
-            "typescript"
+            "typescript",
+            "typescript-tslint-plugin"
         ];
 
         let result = {
