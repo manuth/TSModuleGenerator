@@ -38,7 +38,7 @@ export abstract class Generator<T extends IGeneratorSettings = IGeneratorSetting
     /**
      * Gets the questions to ask before executing the generator.
      */
-    protected get Questions(): YeomanGenerator.Question[]
+    protected get Questions(): Question<T>[]
     {
         return [];
     }
@@ -166,7 +166,7 @@ export abstract class Generator<T extends IGeneratorSettings = IGeneratorSetting
                 });
         }
 
-        questions.unshift(...this.Questions);
+        questions.unshift(...this.Questions as YeomanGenerator.Question[]);
         Object.assign(this.Settings, await this.prompt(questions));
     }
 

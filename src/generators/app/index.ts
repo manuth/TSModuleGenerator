@@ -1,8 +1,8 @@
 import chalk from "chalk";
 import dedent = require("dedent");
+import { Question } from "inquirer";
 import kebabCase = require("lodash.kebabcase");
 import Path = require("path");
-import { Question } from "yeoman-generator";
 import yosay = require("yosay");
 import { Generator } from "../../Generator";
 import { IComponentProvider } from "../../IComponentProvider";
@@ -35,7 +35,7 @@ class ModuleGenerator extends Generator<IModuleSettings>
         return "app";
     }
 
-    protected get Questions(): Question[]
+    protected get Questions(): Question<IModuleSettings>[]
     {
         return [
             {
