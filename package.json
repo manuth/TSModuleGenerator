@@ -1,6 +1,6 @@
 {
   "name": "generator-ts-node-module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Generator for Node-Modules Written in TypeScript.",
   "author": "Manuel Thalmann <m@nuth.ch>",
   "license": "MIT",
