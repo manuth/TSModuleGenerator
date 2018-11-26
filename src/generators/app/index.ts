@@ -1,11 +1,9 @@
 import chalk from "chalk";
 import dedent = require("dedent");
-import { Question } from "inquirer";
+import { Generator, IComponentProvider, Question } from "extended-yo-generator";
 import kebabCase = require("lodash.kebabcase");
 import Path = require("path");
 import yosay = require("yosay");
-import { Generator } from "../../Generator";
-import { IComponentProvider } from "../../IComponentProvider";
 import { IModuleSettings } from "./IModuleSettings";
 import { LintMode } from "./LintMode";
 import { ModuleComponent } from "./ModuleComponent";
