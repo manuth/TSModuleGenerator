@@ -189,6 +189,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         let scripts = [
             "compile",
             "watch",
+            "clean",
             "lint",
             "test",
             "prepare"
