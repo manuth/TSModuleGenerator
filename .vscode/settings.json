@@ -5,6 +5,8 @@
     "typescript.format.placeOpenBraceOnNewLineForFunctions": true,
     "files.associations": {
         ".gitignore.ejs": "ignore",
-        ".npmignore.ejs": "ignore"
+        ".npmignore.ejs": "ignore",
+        "**/templates/app/index.ts.ejs": "typescript",
+        "**/templates/app/main.test.ts.ejs": "typescript"
     }
 }

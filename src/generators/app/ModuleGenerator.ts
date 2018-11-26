@@ -100,7 +100,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                         switch (settings[ModuleSetting.LintMode])
                                         {
                                             case LintMode.Weak:
-                                                return "tslint.weak.jsonc";
+                                                return "tslint.json";
                                             case LintMode.Strong:
                                             default:
                                                 return this.modulePath("tslint.json");
@@ -154,7 +154,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         this.fs.writeJSON(this.destinationPath("package.json"), this.GetPackageJSON());
         this.fs.copy(this.modulePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
         this.fs.copyTpl(
-            this.templatePath("README.md.ejs"),
+            this.templatePath("README.md"),
             this.destinationPath("README.md"),
             {
                 Name: this.Settings[ModuleSetting.DisplayName],
