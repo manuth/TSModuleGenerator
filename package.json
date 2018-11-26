@@ -18,12 +18,13 @@
   },
   "homepage": "https://github.com/manuth/TSModuleGenerator#readme",
   "scripts": {
-    "compile": "tsc -p .",
+    "build": "tsc -p .",
+    "rebuild": "npm run clean && npm run build",
     "watch": "tsc -p . --watch",
     "clean": "rimraf ./lib",
     "lint": "tslint -p ./ -t verbose",
     "test": "mocha",
-    "prepare": "npm run clean && npm run compile"
+    "prepare": "npm run rebuild"
   },
   "dependencies": {
     "dedent": "^0.7.0",
@@ -43,6 +44,7 @@
     "@types/yeoman-test": "^1.7.4",
     "@types/yosay": "0.0.29",
     "mocha": "^5.2.0",
+    "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6",
     "typescript-tslint-plugin": "^0.1.0",

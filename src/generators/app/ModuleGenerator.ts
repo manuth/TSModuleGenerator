@@ -187,7 +187,8 @@ export class ModuleGenerator extends Generator<IModuleSettings>
     protected GetPackageJSON = (): {} =>
     {
         let scripts = [
-            "compile",
+            "build",
+            "rebuild",
             "watch",
             "clean",
             "lint",
@@ -199,6 +200,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
             "@types/mocha",
             "@types/node",
             "mocha",
+            "rimraf",
             "tslint",
             "typescript",
             "typescript-tslint-plugin"
