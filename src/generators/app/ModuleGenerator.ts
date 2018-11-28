@@ -140,7 +140,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                             }
                                         }
 
-                                        return this.fs.writeJSON(destination, result);
+                                        return this.fs.writeJSON(destination, result, null, 4);
                                     }
                                 },
                                 {
@@ -163,7 +163,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                             }
                                         }
 
-                                        return this.fs.writeJSON(destination, result);
+                                        return this.fs.writeJSON(destination, result, null, 4);
                                     }
                                 }
                             ]
