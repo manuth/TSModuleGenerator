@@ -18,6 +18,15 @@
             }
         },
         {
+            "label": "Rebuild",
+            "type": "npm",
+            "script": "rebuild",
+            "problemMatcher": "$tsc",
+            "presentation": {
+                "reveal": "never"
+            }
+        },
+        {
             "label": "Lint",
             "type": "npm",
             "script": "lint",
