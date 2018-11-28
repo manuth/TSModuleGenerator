@@ -1,8 +1,10 @@
 import chalk from "chalk";
 import dedent = require("dedent");
 import { Generator, IComponentProvider, Question } from "extended-yo-generator";
+import FileSystem = require("fs-extra");
 import kebabCase = require("lodash.kebabcase");
 import Path = require("path");
+import { isNullOrUndefined } from "util";
 import yosay = require("yosay");
 import { IModuleSettings } from "./IModuleSettings";
 import { LintMode } from "./LintMode";
@@ -116,12 +118,53 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                             Default: true,
                             FileMappings: [
                                 {
-                                    Source: this.modulePath(".vscode"),
+                                    Source: () => this.modulePath(".vscode"),
                                     Destination: ".vscode"
+                                },
+                                {
+                                    Source: () => this.modulePath(".vscode", "extensions.json"),
+                                    Destination: () => this.destinationPath(".vscode", "extensions.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let result: {
+                                            recommendations?: string[]
+                                        } = {};
+                                        let extensions: typeof result = await FileSystem.readJSON(source);
+                                        result.recommendations = [];
+
+                                        if (!isNullOrUndefined(extensions.recommendations))
+                                        {
+                                            for (let extension of extensions.recommendations)
+                                            {
+                                                result.recommendations.push(extension);
+                                            }
+                                        }
+
+                                        return FileSystem.outputJSON(destination, result);
+                                    }
                                 },
                                 {
                                     Source: "launch.json",
                                     Destination: () => this.destinationPath(".vscode", "launch.json")
+                                },
+                                {
+                                    Source: () => this.modulePath(".vscode", "settings.json"),
+                                    Destination: () => this.destinationPath(".vscode", "settings.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let result: { [key: string]: any } = {};
+                                        let settings: typeof result = await FileSystem.readJSON(source);
+
+                                        for (let key in settings)
+                                        {
+                                            if (key !== "files.associations")
+                                            {
+                                                result[key] = settings[key];
+                                            }
+                                        }
+
+                                        return FileSystem.outputJSON(destination, result);
+                                    }
                                 }
                             ]
                         }
