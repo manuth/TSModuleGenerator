@@ -129,7 +129,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                         let result: {
                                             recommendations?: string[]
                                         } = {};
-                                        let extensions: typeof result = await FileSystem.readJSON(source);
+                                        let extensions: typeof result = JSON.parse((await FileSystem.readFile(source)).toString());
                                         result.recommendations = [];
 
                                         if (!isNullOrUndefined(extensions.recommendations))
@@ -153,7 +153,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                     Process: async (source, destination) =>
                                     {
                                         let result: { [key: string]: any } = {};
-                                        let settings: typeof result = await FileSystem.readJSON(source);
+                                        let settings: typeof result = JSON.parse((await FileSystem.readFile(source)).toString());
 
                                         for (let key in settings)
                                         {
