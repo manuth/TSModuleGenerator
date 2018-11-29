@@ -148,8 +148,45 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                     }
                                 },
                                 {
-                                    Source: "launch.json",
-                                    Destination: () => this.destinationPath(".vscode", "launch.json")
+                                    Source: () => this.modulePath(".vscode", "launch.json"),
+                                    Destination: () => this.destinationPath(".vscode", "launch.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let configurations: any[] = [];
+                                        let launch: {
+                                            configurations?: any[]
+                                        } = JSON.parse((await FileSystem.readFile(source)).toString());
+
+                                        if (!isNullOrUndefined(launch.configurations))
+                                        {
+                                            let validConfigurations: any[] = [];
+
+                                            for (let configuration of launch.configurations)
+                                            {
+                                                if ((configuration.name as string).toLowerCase().includes("launch tests"))
+                                                {
+                                                    validConfigurations.push(configuration);
+                                                }
+                                            }
+
+                                            launch.configurations = validConfigurations;
+                                        }
+                                        else
+                                        {
+                                            launch.configurations = [];
+                                        }
+
+                                        launch.configurations.unshift(
+                                            {
+                                                type: "node",
+                                                request: "launch",
+                                                name: "Launch Program",
+                                                program: "${workspaceFolder}/lib/index.js",
+                                                preLaunchTask: "Build"
+                                            });
+
+                                        this.fs.write(destination, JSON.stringify(launch, null, 4));
+                                    }
                                 },
                                 {
                                     Source: () => this.modulePath(".vscode", "settings.json"),
