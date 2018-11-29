@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import JSON = require("comment-json");
 import dedent = require("dedent");
 import { Generator, IComponentProvider, Question } from "extended-yo-generator";
 import FileSystem = require("fs-extra");
