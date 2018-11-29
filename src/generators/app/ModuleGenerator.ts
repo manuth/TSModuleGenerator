@@ -137,7 +137,10 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                         {
                                             for (let extension of extensions.recommendations)
                                             {
-                                                result.recommendations.push(extension);
+                                                if (extension !== "qassimfarid.ejs-language-support")
+                                                {
+                                                    result.recommendations.push(extension);
+                                                }
                                             }
                                         }
 
