@@ -167,7 +167,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                             }
                                         }
 
-                                        return this.fs.write(destination, JSON.stringify(result, null, 4));
+                                        this.fs.write(destination, JSON.stringify(result, null, 4));
                                     }
                                 }
                             ]
