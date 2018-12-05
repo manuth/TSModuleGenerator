@@ -1,4 +1,4 @@
-import { IGeneratorSettings } from "../../IGeneratorSettings";
+import { IGeneratorSettings } from "extended-yo-generator";
 import { LintMode } from "./LintMode";
 import { ModuleSetting } from "./ModuleSetting";
 
