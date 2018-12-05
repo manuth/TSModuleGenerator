@@ -1,8 +1,11 @@
 import chalk from "chalk";
+import JSON = require("comment-json");
 import dedent = require("dedent");
 import { Generator, IComponentProvider, Question } from "extended-yo-generator";
+import FileSystem = require("fs-extra");
 import kebabCase = require("lodash.kebabcase");
 import Path = require("path");
+import { isNullOrUndefined } from "util";
 import yosay = require("yosay");
 import { IModuleSettings } from "./IModuleSettings";
 import { LintMode } from "./LintMode";
@@ -100,7 +103,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                         switch (settings[ModuleSetting.LintMode])
                                         {
                                             case LintMode.Weak:
-                                                return "tslint.weak.jsonc";
+                                                return "tslint.json";
                                             case LintMode.Strong:
                                             default:
                                                 return this.modulePath("tslint.json");
@@ -116,12 +119,93 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                             Default: true,
                             FileMappings: [
                                 {
-                                    Source: this.modulePath(".vscode"),
+                                    Source: () => this.modulePath(".vscode"),
                                     Destination: ".vscode"
                                 },
                                 {
-                                    Source: "launch.json",
-                                    Destination: () => this.destinationPath(".vscode", "launch.json")
+                                    Source: () => this.modulePath(".vscode", "extensions.json"),
+                                    Destination: () => this.destinationPath(".vscode", "extensions.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let result: {
+                                            recommendations?: string[]
+                                        } = {};
+                                        let extensions: typeof result = JSON.parse((await FileSystem.readFile(source)).toString());
+                                        result.recommendations = [];
+
+                                        if (!isNullOrUndefined(extensions.recommendations))
+                                        {
+                                            for (let extension of extensions.recommendations)
+                                            {
+                                                if (extension !== "qassimfarid.ejs-language-support")
+                                                {
+                                                    result.recommendations.push(extension);
+                                                }
+                                            }
+                                        }
+
+                                        return this.fs.write(destination, JSON.stringify(result, null, 4));
+                                    }
+                                },
+                                {
+                                    Source: () => this.modulePath(".vscode", "launch.json"),
+                                    Destination: () => this.destinationPath(".vscode", "launch.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let configurations: any[] = [];
+                                        let launch: {
+                                            configurations?: any[]
+                                        } = JSON.parse((await FileSystem.readFile(source)).toString());
+
+                                        if (!isNullOrUndefined(launch.configurations))
+                                        {
+                                            let validConfigurations: any[] = [];
+
+                                            for (let configuration of launch.configurations)
+                                            {
+                                                if ((configuration.name as string).toLowerCase().includes("launch tests"))
+                                                {
+                                                    validConfigurations.push(configuration);
+                                                }
+                                            }
+
+                                            launch.configurations = validConfigurations;
+                                        }
+                                        else
+                                        {
+                                            launch.configurations = [];
+                                        }
+
+                                        launch.configurations.unshift(
+                                            {
+                                                type: "node",
+                                                request: "launch",
+                                                name: "Launch Program",
+                                                program: "${workspaceFolder}/lib/index.js",
+                                                preLaunchTask: "Build"
+                                            });
+
+                                        this.fs.write(destination, JSON.stringify(launch, null, 4));
+                                    }
+                                },
+                                {
+                                    Source: () => this.modulePath(".vscode", "settings.json"),
+                                    Destination: () => this.destinationPath(".vscode", "settings.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let result: { [key: string]: any } = {};
+                                        let settings: typeof result = JSON.parse((await FileSystem.readFile(source)).toString());
+
+                                        for (let key in settings)
+                                        {
+                                            if (key !== "files.associations")
+                                            {
+                                                result[key] = settings[key];
+                                            }
+                                        }
+
+                                        this.fs.write(destination, JSON.stringify(result, null, 4));
+                                    }
                                 }
                             ]
                         }
@@ -140,6 +224,8 @@ export class ModuleGenerator extends Generator<IModuleSettings>
     public async writing()
     {
         let sourceDir = "src";
+        this.log(chalk.whiteBright("Generating the Workspace"));
+
         this.destinationRoot(this.Settings[ModuleSetting.Destination]);
         this.fs.copy(this.templatePath("index.ts.ejs"), this.destinationPath(sourceDir, "index.ts"));
         this.fs.copyTpl(
@@ -154,7 +240,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         this.fs.writeJSON(this.destinationPath("package.json"), this.GetPackageJSON());
         this.fs.copy(this.modulePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
         this.fs.copyTpl(
-            this.templatePath("README.md.ejs"),
+            this.templatePath("README.md"),
             this.destinationPath("README.md"),
             {
                 Name: this.Settings[ModuleSetting.DisplayName],
@@ -165,20 +251,26 @@ export class ModuleGenerator extends Generator<IModuleSettings>
 
     public async install()
     {
-        this.log(dedent(`
-            Your workspace has been generated!
+        this.log(
+            dedent(`
+                Your workspace has been generated!
 
-            ${chalk.whiteBright("Installing dependencies...")}`));
+                ${chalk.whiteBright("Installing dependencies...")}`));
         this.npmInstall();
     }
 
     public async end()
     {
-        this.log(dedent(`
-            Your Node-Moulde has been Generated!
-            Open it up using this command:
+        this.log(
+            dedent(
+                `
+                ${chalk.whiteBright("Finished")}
+                Your module "${this.Settings[ModuleSetting.DisplayName]}" has been created!
+                To start editing with Visual Studio Code use following command:
 
-            code "${this.Settings[ModuleSetting.Destination]}"`));
+                    code "${this.Settings[ModuleSetting.Destination]}"
+
+                Thanks for using TSModuleGenerator!`));
     }
 
     /**
@@ -187,7 +279,8 @@ export class ModuleGenerator extends Generator<IModuleSettings>
     protected GetPackageJSON = (): {} =>
     {
         let scripts = [
-            "compile",
+            "build",
+            "rebuild",
             "watch",
             "clean",
             "lint",
@@ -199,6 +292,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
             "@types/mocha",
             "@types/node",
             "mocha",
+            "rimraf",
             "tslint",
             "typescript",
             "typescript-tslint-plugin"
