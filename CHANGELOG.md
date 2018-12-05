@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## TSModuleGenerator v1.2.0
   - Added a `clean`-script for cleaning the `tsc`-output
   - Replaced the generator-code by the `extended-yo-generator` module
+  - Added a script for cleaning and/or rebuilding the code
+  - Reworked the generated VSCode-workspace
 
 [Show differences][v1.2.0]
 
