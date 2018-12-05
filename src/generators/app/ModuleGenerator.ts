@@ -224,6 +224,8 @@ export class ModuleGenerator extends Generator<IModuleSettings>
     public async writing()
     {
         let sourceDir = "src";
+        this.log(chalk.whiteBright("Generating the Workspace"));
+
         this.destinationRoot(this.Settings[ModuleSetting.Destination]);
         this.fs.copy(this.templatePath("index.ts.ejs"), this.destinationPath(sourceDir, "index.ts"));
         this.fs.copyTpl(
@@ -249,20 +251,26 @@ export class ModuleGenerator extends Generator<IModuleSettings>
 
     public async install()
     {
-        this.log(dedent(`
-            Your workspace has been generated!
+        this.log(
+            dedent(`
+                Your workspace has been generated!
 
-            ${chalk.whiteBright("Installing dependencies...")}`));
+                ${chalk.whiteBright("Installing dependencies...")}`));
         this.npmInstall();
     }
 
     public async end()
     {
-        this.log(dedent(`
-            Your Node-Moulde has been Generated!
-            Open it up using this command:
+        this.log(
+            dedent(
+                `
+                ${chalk.whiteBright("Finished")}
+                Your module "${this.Settings[ModuleSetting.DisplayName]}" has been created!
+                To start editing with Visual Studio Code use following command:
 
-            code "${this.Settings[ModuleSetting.Destination]}"`));
+                    code "${this.Settings[ModuleSetting.Destination]}"
+
+                Thanks for using TSModuleGenerator!`));
     }
 
     /**
