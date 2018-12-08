@@ -63,5 +63,8 @@ typings/
 # Source-files
 [Ss]rc/
 
+# Source-maps
+[Ll]ib/**/*.js.map
+
 # Unit-Tests
 [Ll]ib/tests/
