@@ -1,5 +1,5 @@
 # TSModuleGenerator
-A Generator for Node-Modules Written in TypeScript.
+A Generator for Node-Modules Written in TypeScript
 
 ## Usage
 ### Installing `TSModuleGenerator`
