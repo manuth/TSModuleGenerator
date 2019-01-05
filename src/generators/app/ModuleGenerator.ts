@@ -7,6 +7,8 @@ import kebabCase = require("lodash.kebabcase");
 import Path = require("path");
 import { isNullOrUndefined } from "util";
 import yosay = require("yosay");
+import { IExtensionFile } from "./IExtetensionFile";
+import { ILaunchFile } from "./ILaunchFile";
 import { IModuleSettings } from "./IModuleSettings";
 import { LintMode } from "./LintMode";
 import { ModuleComponent } from "./ModuleComponent";
@@ -127,9 +129,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                     Destination: () => this.destinationPath(".vscode", "extensions.json"),
                                     Process: async (source, destination) =>
                                     {
-                                        let result: {
-                                            recommendations?: string[]
-                                        } = {};
+                                        let result: IExtensionFile = {};
                                         let extensions: typeof result = JSON.parse((await FileSystem.readFile(source)).toString());
                                         result.recommendations = [];
 
@@ -152,10 +152,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                     Destination: () => this.destinationPath(".vscode", "launch.json"),
                                     Process: async (source, destination) =>
                                     {
-                                        let configurations: any[] = [];
-                                        let launch: {
-                                            configurations?: any[]
-                                        } = JSON.parse((await FileSystem.readFile(source)).toString());
+                                        let launch: ILaunchFile = JSON.parse((await FileSystem.readFile(source)).toString());
 
                                         if (!isNullOrUndefined(launch.configurations))
                                         {
