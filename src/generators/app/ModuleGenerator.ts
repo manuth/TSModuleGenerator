@@ -1,12 +1,12 @@
 import chalk from "chalk";
 import JSON = require("comment-json");
-import dedent = require("dedent");
+import Dedent = require("dedent");
 import { Generator, IComponentProvider, Question } from "extended-yo-generator";
 import FileSystem = require("fs-extra");
-import kebabCase = require("lodash.kebabcase");
+import KebabCase = require("lodash.kebabcase");
 import Path = require("path");
 import { isNullOrUndefined } from "util";
-import yosay = require("yosay");
+import YoSay = require("yosay");
 import { IExtensionFile } from "./IExtetensionFile";
 import { ILaunchFile } from "./ILaunchFile";
 import { IModuleSettings } from "./IModuleSettings";
@@ -58,7 +58,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                 type: "input",
                 name: ModuleSetting.Name,
                 message: "What's the name of the module to generate?",
-                default: (answers: IModuleSettings) => kebabCase(answers[ModuleSetting.DisplayName])
+                default: (answers: IModuleSettings) => KebabCase(answers[ModuleSetting.DisplayName])
             },
             {
                 type: "input",
@@ -214,7 +214,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
 
     public async prompting()
     {
-        this.log(yosay(`Welcome to the ${chalk.whiteBright("TypeScript-Module")} generator!`));
+        this.log(YoSay(`Welcome to the ${chalk.whiteBright("TypeScript-Module")} generator!`));
         return super.prompting();
     }
 
@@ -249,7 +249,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
     public async install()
     {
         this.log(
-            dedent(`
+            Dedent(`
                 Your workspace has been generated!
 
                 ${chalk.whiteBright("Installing dependencies...")}`));
@@ -259,7 +259,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
     public async end()
     {
         this.log(
-            dedent(
+            Dedent(
                 `
                 ${chalk.whiteBright("Finished")}
                 Your module "${this.Settings[ModuleSetting.DisplayName]}" has been created!
