@@ -100,18 +100,25 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                             ],
                             FileMappings: [
                                 {
-                                    Source: (settings) =>
+                                    Source: null,
+                                    Destination: "tslint.json",
+                                    Process: (source, destination, context, defaultProcess, settings) =>
                                     {
+                                        let preset: string;
+
                                         switch (settings[ModuleSetting.LintMode])
                                         {
                                             case LintMode.Weak:
-                                                return "tslint.json";
+                                                preset = "@manuth/tslint-presets/weak";
+                                                break;
                                             case LintMode.Strong:
                                             default:
-                                                return this.modulePath("tslint.json");
+                                                preset = "@manuth/tslint-presets/recommended";
+                                                break;
                                         }
-                                    },
-                                    Destination: "tslint.json"
+
+                                        this.fs.writeJSON(destination, { extends: preset }, null, 4);
+                                    }
                                 }
                             ]
                         },
@@ -286,6 +293,8 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         ];
         let dependencies: string[] = [];
         let devDependencies = [
+            "@manuth/tsconfig",
+            "@manuth/tslint-presets",
             "@types/mocha",
             "@types/node",
             "mocha",
