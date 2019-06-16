@@ -33,12 +33,18 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         super(args, options);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected get TemplateRoot(): string
     {
         return "app";
     }
 
-    protected get Questions(): Question<IModuleSettings>[]
+    /**
+     * @inheritdoc
+     */
+    protected get Questions(): Array<Question<IModuleSettings>>
     {
         return [
             {
@@ -68,6 +74,9 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     protected get ProvidedComponents(): IComponentProvider<IModuleSettings>
     {
         return {
@@ -219,12 +228,18 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         };
     }
 
+    /**
+     * @inheritdoc
+     */
     public async prompting()
     {
         this.log(YoSay(`Welcome to the ${chalk.whiteBright("TypeScript-Module")} generator!`));
         return super.prompting();
     }
 
+    /**
+     * @inheritdoc
+     */
     public async writing()
     {
         let sourceDir = "src";
@@ -253,6 +268,9 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         return super.writing();
     }
 
+    /**
+     * @inheritdoc
+     */
     public async install()
     {
         this.log(
@@ -263,6 +281,9 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         this.npmInstall();
     }
 
+    /**
+     * @inheritdoc
+     */
     public async end()
     {
         this.log(
