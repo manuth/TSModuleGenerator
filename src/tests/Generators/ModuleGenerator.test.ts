@@ -1,8 +1,7 @@
 import Assert = require("assert");
-import ChildProcess = require("child_process");
+import { spawnSync } from "child_process";
+import npmWhich = require("npm-which");
 import Path = require("path");
-import TypeScript = require("typescript");
-import { promisify } from "util";
 import { run, RunContext } from "yeoman-test";
 import { LintMode } from "../../generators/app/LintMode";
 import { ModuleSetting } from "../../generators/app/ModuleSetting";
@@ -56,10 +55,17 @@ suite(
                 this.timeout(36 * 1000);
                 this.slow(18 * 1000);
 
-                await promisify(ChildProcess.exec)("npm install",
+                let result = spawnSync(
+                    npmWhich(__dirname).sync("npm"),
+                    [
+                        "install",
+                        "--silent"
+                    ],
                     {
                         cwd: moduleDir
                     });
+
+                Assert.strictEqual(result.status === 0, true);
             });
 
         test(
@@ -69,22 +75,14 @@ suite(
                 this.timeout(7.2 * 1000);
                 this.slow(3.6 * 1000);
 
-                let host: TypeScript.ParseConfigFileHost = {
-                    ...TypeScript.sys,
-                    onUnRecoverableConfigFileDiagnostic: (diagnostic) =>
-                    {
-                        throw diagnostic;
-                    }
-                };
+                let result = spawnSync(
+                    npmWhich(__dirname).sync("tsc"),
+                    [
+                        "-p",
+                        moduleDir
+                    ]);
 
-                let config = TypeScript.getParsedCommandLineOfConfigFile(tsConfigFile, {}, host);
-                let compilerResult = TypeScript.createProgram(
-                    {
-                        rootNames: config.fileNames,
-                        options: config.options
-                    }).emit();
-
-                Assert.strictEqual(compilerResult.emitSkipped, false);
+                Assert.strictEqual(result.status === 0, true);
             });
 
         test(
