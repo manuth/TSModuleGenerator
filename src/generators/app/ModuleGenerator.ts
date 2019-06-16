@@ -1,12 +1,14 @@
 import chalk from "chalk";
 import JSON = require("comment-json");
-import dedent = require("dedent");
+import Dedent = require("dedent");
 import { Generator, IComponentProvider, Question } from "extended-yo-generator";
 import FileSystem = require("fs-extra");
-import kebabCase = require("lodash.kebabcase");
+import KebabCase = require("lodash.kebabcase");
 import Path = require("path");
 import { isNullOrUndefined } from "util";
-import yosay = require("yosay");
+import YoSay = require("yosay");
+import { IExtensionFile } from "./IExtetensionFile";
+import { ILaunchFile } from "./ILaunchFile";
 import { IModuleSettings } from "./IModuleSettings";
 import { LintMode } from "./LintMode";
 import { ModuleComponent } from "./ModuleComponent";
@@ -31,12 +33,18 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         super(args, options);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected get TemplateRoot(): string
     {
         return "app";
     }
 
-    protected get Questions(): Question<IModuleSettings>[]
+    /**
+     * @inheritdoc
+     */
+    protected get Questions(): Array<Question<IModuleSettings>>
     {
         return [
             {
@@ -56,7 +64,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                 type: "input",
                 name: ModuleSetting.Name,
                 message: "What's the name of the module to generate?",
-                default: (answers: IModuleSettings) => kebabCase(answers[ModuleSetting.DisplayName])
+                default: (answers: IModuleSettings) => KebabCase(answers[ModuleSetting.DisplayName])
             },
             {
                 type: "input",
@@ -66,6 +74,9 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     protected get ProvidedComponents(): IComponentProvider<IModuleSettings>
     {
         return {
@@ -98,18 +109,25 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                             ],
                             FileMappings: [
                                 {
-                                    Source: (settings) =>
+                                    Source: null,
+                                    Destination: "tslint.json",
+                                    Process: (source, destination, context, defaultProcess, settings) =>
                                     {
+                                        let preset: string;
+
                                         switch (settings[ModuleSetting.LintMode])
                                         {
                                             case LintMode.Weak:
-                                                return "tslint.json";
+                                                preset = "@manuth/tslint-presets/weak";
+                                                break;
                                             case LintMode.Strong:
                                             default:
-                                                return this.modulePath("tslint.json");
+                                                preset = "@manuth/tslint-presets/recommended";
+                                                break;
                                         }
-                                    },
-                                    Destination: "tslint.json"
+
+                                        this.fs.writeJSON(destination, { extends: preset }, null, 4);
+                                    }
                                 }
                             ]
                         },
@@ -127,9 +145,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                     Destination: () => this.destinationPath(".vscode", "extensions.json"),
                                     Process: async (source, destination) =>
                                     {
-                                        let result: {
-                                            recommendations?: string[]
-                                        } = {};
+                                        let result: IExtensionFile = {};
                                         let extensions: typeof result = JSON.parse((await FileSystem.readFile(source)).toString());
                                         result.recommendations = [];
 
@@ -152,10 +168,7 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                     Destination: () => this.destinationPath(".vscode", "launch.json"),
                                     Process: async (source, destination) =>
                                     {
-                                        let configurations: any[] = [];
-                                        let launch: {
-                                            configurations?: any[]
-                                        } = JSON.parse((await FileSystem.readFile(source)).toString());
+                                        let launch: ILaunchFile = JSON.parse((await FileSystem.readFile(source)).toString());
 
                                         if (!isNullOrUndefined(launch.configurations))
                                         {
@@ -215,12 +228,18 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         };
     }
 
+    /**
+     * @inheritdoc
+     */
     public async prompting()
     {
-        this.log(yosay(`Welcome to the ${chalk.whiteBright("TypeScript-Module")} generator!`));
+        this.log(YoSay(`Welcome to the ${chalk.whiteBright("TypeScript-Module")} generator!`));
         return super.prompting();
     }
 
+    /**
+     * @inheritdoc
+     */
     public async writing()
     {
         let sourceDir = "src";
@@ -249,20 +268,26 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         return super.writing();
     }
 
+    /**
+     * @inheritdoc
+     */
     public async install()
     {
         this.log(
-            dedent(`
+            Dedent(`
                 Your workspace has been generated!
 
                 ${chalk.whiteBright("Installing dependencies...")}`));
         this.npmInstall();
     }
 
+    /**
+     * @inheritdoc
+     */
     public async end()
     {
         this.log(
-            dedent(
+            Dedent(
                 `
                 ${chalk.whiteBright("Finished")}
                 Your module "${this.Settings[ModuleSetting.DisplayName]}" has been created!
@@ -289,6 +314,8 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         ];
         let dependencies: string[] = [];
         let devDependencies = [
+            "@manuth/tsconfig",
+            "@manuth/tslint-presets",
             "@types/mocha",
             "@types/node",
             "mocha",
