@@ -8,6 +8,11 @@ import { ModuleSetting } from "./ModuleSetting";
 export interface IModuleSettings extends IGeneratorSettings
 {
     /**
+     * Gets or sets the path to save the module to.
+     */
+    [ModuleSetting.Destination]: string;
+
+    /**
      * Gets or sets the human-readable name.
      */
     [ModuleSetting.Name]: string;
