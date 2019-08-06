@@ -153,7 +153,9 @@ export class ModuleGenerator extends Generator<IModuleSettings>
                                         {
                                             for (let extension of extensions.recommendations)
                                             {
-                                                if (extension !== "qassimfarid.ejs-language-support")
+                                                if (
+                                                    (extension !== "qassimfarid.ejs-language-support") &&
+                                                    (extension !== "davidanson.vscode-markdownlint"))
                                                 {
                                                     result.recommendations.push(extension);
                                                 }
@@ -211,13 +213,55 @@ export class ModuleGenerator extends Generator<IModuleSettings>
 
                                         for (let key in settings)
                                         {
-                                            if (key !== "files.associations")
+                                            if (
+                                                (key !== "files.associations") &&
+                                                (key !== "markdownlint.ignore"))
                                             {
                                                 result[key] = settings[key];
                                             }
                                         }
 
                                         this.fs.write(destination, JSON.stringify(result, null, 4));
+                                    }
+                                },
+                                {
+                                    Source: () => this.modulePath(".vscode", "tasks.json"),
+                                    Destination: () => this.destinationPath(".vscode", "tasks.json"),
+                                    Process: async (source, destination) =>
+                                    {
+                                        let tasks = JSON.parse((await FileSystem.readFile(source)).toString());
+
+                                        if (!isNullOrUndefined(tasks.tasks))
+                                        {
+                                            let validTasks: any[] = [];
+
+                                            for (let task of tasks.tasks)
+                                            {
+                                                if (!(task.label as string).toLowerCase().includes("lint"))
+                                                {
+                                                    validTasks.push(task);
+                                                }
+                                            }
+
+                                            tasks.tasks = validTasks;
+                                        }
+                                        else
+                                        {
+                                            tasks.tasks = [];
+                                        }
+
+                                        (tasks.tasks as any[]).push(
+                                            {
+                                                label: "Lint",
+                                                type: "npm",
+                                                script: "lint",
+                                                problemMatcher: "$tslint5",
+                                                presentation: {
+                                                    reveal: "never"
+                                                }
+                                            });
+
+                                        this.fs.write(destination, JSON.stringify(tasks, null, 4));
                                     }
                                 }
                             ]
@@ -347,7 +391,14 @@ export class ModuleGenerator extends Generator<IModuleSettings>
         {
             if (script in packageJSON.scripts)
             {
-                result.scripts[script] = packageJSON.scripts[script];
+                if (script === "lint")
+                {
+                    result.scripts[script] = "tslint -p ./ -t verbose";
+                }
+                else
+                {
+                    result.scripts[script] = packageJSON.scripts[script];
+                }
             }
         }
 
