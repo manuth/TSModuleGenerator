@@ -1,3 +1,6 @@
+# THIS PACKAGE IS DEPRECATED
+This package has been migrated to the [`@manuth/generator-ts-project`-package](https://github.com/manuth/TSProjectGenerator) which provides both a generator for yeoman-generators written in typescript and a generator for node-modules written in typescript.
+
 # TSModuleGenerator
 A Generator for Node-Modules Written in TypeScript
 
